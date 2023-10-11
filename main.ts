@@ -4,12 +4,6 @@
  * Red ball = target1
  * 
  * Blue ball = target2
- * 
- * Direction
- * 
- * left = 1
- * 
- * right = 2
  */
 function HeadForward (speed: number) {
     if (speed >= 0) {
@@ -42,12 +36,12 @@ function DoTurn (turnAngle: number) {
 input.onButtonPressed(Button.A, function () {
     Calibrate()
 })
-function Grab (targetObject: number) {
-    while (huskylens.isAppear(targetObject, HUSKYLENSResultType_t.HUSKYLENSResultBlock)) {
+function Grab () {
+    if (huskylens.isAppear(currentTarget, HUSKYLENSResultType_t.HUSKYLENSResultBlock)) {
         iBIT.Servo(ibitServo.SV1, 45)
-        HeadForward(baseSpeed)
+    } else {
+        iBIT.Servo(ibitServo.SV1, 0)
     }
-    iBIT.Servo(ibitServo.SV1, 0)
 }
 function DrawCompass () {
     tempDegrees = deltaAngle(currentHeading)
@@ -72,10 +66,10 @@ function Calibrate () {
 input.onButtonPressed(Button.AB, function () {
     input.calibrateCompass()
 })
-function Track (targetObject: number, rightTurn: boolean) {
+function Track (rightTurn: boolean) {
     while (!(leftIR() && rightIR())) {
         HeadForward(baseSpeed)
-        Grab(targetObject)
+        Grab()
     }
     Release()
     if (rightTurn) {
@@ -134,5 +128,5 @@ basic.pause(200)
 iBIT.MotorStop()
 basic.showIcon(IconNames.Happy)
 basic.forever(function () {
-    DrawCompass()
+	
 })
