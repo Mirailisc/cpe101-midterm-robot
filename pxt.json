@@ -1,0 +1,31 @@
+{
+    "name": "Compass Tracker",
+    "description": "",
+    "dependencies": {
+        "core": "*",
+        "radio": "*",
+        "microphone": "*",
+        "iBIT": "github:emwta/pxt-ibit#v4.0.10",
+        "Huskylens": "github:dfrobot/pxt-dfrobot_huskylens#v2.0.6"
+    },
+    "files": [
+        "main.blocks",
+        "main.ts",
+        "README.md"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "targetVersions": {
+        "branch": "v6.0.18",
+        "tag": "v6.0.18",
+        "commits": "https://github.com/microsoft/pxt-microbit/commits/1919e0531aa57d2d1aff173fafd625176e15c07d",
+        "target": "6.0.18",
+        "pxt": "9.0.12",
+        "targetId": "microbit"
+    },
+    "supportedTargets": [
+        "microbit"
+    ],
+    "preferredEditor": "blocksprj"
+}
