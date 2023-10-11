@@ -13,11 +13,11 @@ function DoTurn (turnAngle: number) {
     while (Math.abs(tempD) > 2) {
         tempD = deltaAngle(currentHeading)
         if (tempD > 0) {
-            iBIT.setMotor(ibitMotorCH.M1, ibitMotor.Backward, 30 + tempD)
-            iBIT.setMotor(ibitMotorCH.M2, ibitMotor.Forward, 30 + tempD)
+            iBIT.setMotor(ibitMotorCH.M1, ibitMotor.Backward, 15 + tempD)
+            iBIT.setMotor(ibitMotorCH.M2, ibitMotor.Forward, 15 + tempD)
         } else {
-            iBIT.setMotor(ibitMotorCH.M1, ibitMotor.Forward, 30 - tempD)
-            iBIT.setMotor(ibitMotorCH.M2, ibitMotor.Backward, 30 - tempD)
+            iBIT.setMotor(ibitMotorCH.M1, ibitMotor.Forward, 15 - tempD)
+            iBIT.setMotor(ibitMotorCH.M2, ibitMotor.Backward, 15 - tempD)
         }
         DrawCompass()
     }
@@ -28,17 +28,6 @@ input.onButtonPressed(Button.A, function () {
 function DrawCompass () {
     tempDegrees = deltaAngle(currentHeading)
     serial.writeLine("" + (tempDegrees))
-    if (tempDegrees < -135) {
-        basic.showArrow(ArrowNames.South)
-    } else if (tempDegrees < -45) {
-        basic.showArrow(ArrowNames.East)
-    } else if (tempDegrees < 45) {
-        basic.showArrow(ArrowNames.North)
-    } else if (tempDegrees < 135) {
-        basic.showArrow(ArrowNames.West)
-    } else {
-        basic.showArrow(ArrowNames.South)
-    }
 }
 function rightIR () {
     return iBIT.ReadADC(ibitReadADC.ADC0) < wbThreshold
@@ -82,6 +71,10 @@ huskylens.initI2c()
 huskylens.initMode(protocolAlgorithm.OBJECTCLASSIFICATION)
 wbThreshold = 256
 calibrated = 0
+while (calibrated == 0) {
+    basic.showIcon(IconNames.Diamond)
+    basic.showIcon(IconNames.SmallDiamond)
+}
 HeadForward()
 basic.pause(200)
 iBIT.MotorStop()
