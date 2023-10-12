@@ -26,9 +26,11 @@ function DoTurn (turnAngle: number) {
         if (tempD > 0) {
             iBIT.setMotor(ibitMotorCH.M1, ibitMotor.Backward, 15 + tempD)
             iBIT.setMotor(ibitMotorCH.M2, ibitMotor.Forward, 15 + tempD)
-        } else {
+        } else if (tempD < 0) {
             iBIT.setMotor(ibitMotorCH.M1, ibitMotor.Forward, 15 - tempD)
             iBIT.setMotor(ibitMotorCH.M2, ibitMotor.Backward, 15 - tempD)
+        } else {
+            iBIT.MotorStop()
         }
         DrawCompass()
     }
@@ -129,5 +131,5 @@ basic.pause(200)
 iBIT.MotorStop()
 basic.showIcon(IconNames.Happy)
 basic.forever(function () {
-    Grab()
+    DoTurn(0)
 })
