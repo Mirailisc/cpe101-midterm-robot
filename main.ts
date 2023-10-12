@@ -37,6 +37,7 @@ input.onButtonPressed(Button.A, function () {
     Calibrate()
 })
 function Grab () {
+    huskylens.request()
     if (huskylens.isAppear(currentTarget, HUSKYLENSResultType_t.HUSKYLENSResultBlock)) {
         iBIT.Servo(ibitServo.SV1, 45)
     } else {
@@ -114,7 +115,7 @@ let currentTarget = 0
 let baseSpeed = 0
 let wbThreshold = 0
 huskylens.initI2c()
-huskylens.initMode(protocolAlgorithm.OBJECTCLASSIFICATION)
+huskylens.initMode(protocolAlgorithm.ALGORITHM_COLOR_RECOGNITION)
 wbThreshold = 256
 baseSpeed = 30
 currentTarget = 1
@@ -128,5 +129,5 @@ basic.pause(200)
 iBIT.MotorStop()
 basic.showIcon(IconNames.Happy)
 basic.forever(function () {
-	
+    Grab()
 })
