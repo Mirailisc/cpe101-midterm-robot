@@ -21,12 +21,12 @@ function DoTurn (turnAngle: number) {
         currentHeading = tempD
     }
     tempD = deltaAngle(currentHeading)
-    while (Math.abs(tempD) > 2) {
+    while (Math.abs(tempD) > angleThreshold) {
         tempD = deltaAngle(currentHeading)
-        if (tempD > 0) {
+        if (tempD > angleThreshold) {
             iBIT.setMotor(ibitMotorCH.M1, ibitMotor.Backward, 15 + tempD)
             iBIT.setMotor(ibitMotorCH.M2, ibitMotor.Forward, 15 + tempD)
-        } else if (tempD < 0) {
+        } else if (tempD < angleThreshold * -1) {
             iBIT.setMotor(ibitMotorCH.M1, ibitMotor.Forward, 15 - tempD)
             iBIT.setMotor(ibitMotorCH.M2, ibitMotor.Backward, 15 - tempD)
         } else {
@@ -113,6 +113,7 @@ let tempDegrees = 0
 let tempD = 0
 let currentHeading = 0
 let calibrated = 0
+let angleThreshold = 0
 let currentTarget = 0
 let baseSpeed = 0
 let wbThreshold = 0
@@ -121,6 +122,7 @@ huskylens.initMode(protocolAlgorithm.ALGORITHM_COLOR_RECOGNITION)
 wbThreshold = 256
 baseSpeed = 30
 currentTarget = 1
+angleThreshold = 1
 calibrated = 0
 while (calibrated == 0) {
     basic.showIcon(IconNames.Diamond)
