@@ -1,25 +1,25 @@
-/**
- * Target
- * 
- * Red ball = target1
- * 
- * Blue ball = target2
- */
+// Target
+// 
+// Red ball = target1
+// 
+// Blue ball = target2
 function HeadForward (speed: number, duration: number) {
+    tempV = Math.max(Math.min(deltaAngle() * 1, 30), -30)
     if (duration <= 1) {
         if (speed >= 0) {
-            iBIT.Motor2(ibitMotor.Forward, speed - deltaAngle(), speed + deltaAngle())
+            iBIT.Motor2(ibitMotor.Forward, speed - tempV, speed + tempV)
         } else {
-            iBIT.Motor2(ibitMotor.Backward, Math.abs(speed) + deltaAngle(), Math.abs(speed) - deltaAngle())
+            iBIT.Motor2(ibitMotor.Backward, Math.abs(speed) + tempV, Math.abs(speed) - tempV)
         }
         Log()
     } else {
         tempT = input.runningTime()
         while (input.runningTime() - tempT < duration) {
+            tempV = Math.max(Math.min(deltaAngle() * 1, 30), -30)
             if (speed >= 0) {
-                iBIT.Motor2(ibitMotor.Forward, speed - deltaAngle(), speed + deltaAngle())
+                iBIT.Motor2(ibitMotor.Forward, speed - tempV, speed + tempV)
             } else {
-                iBIT.Motor2(ibitMotor.Backward, Math.abs(speed) + deltaAngle(), Math.abs(speed) - deltaAngle())
+                iBIT.Motor2(ibitMotor.Backward, Math.abs(speed) + tempV, Math.abs(speed) - tempV)
             }
             Log()
         }
@@ -30,12 +30,13 @@ function DoTurn (turnAngle: number) {
     tempD = deltaAngle()
     while (Math.abs(tempD) > angleThreshold) {
         tempD = deltaAngle()
+        tempV = Math.min(Math.max(0 + Math.abs(tempD), minimumTurnSpeed), maximumTurnSpeed)
         if (tempD > angleThreshold) {
-            iBIT.setMotor(ibitMotorCH.M1, ibitMotor.Backward, Math.min(Math.max(0 + tempD, minimumTurnSpeed), maximumTurnSpeed))
-            iBIT.setMotor(ibitMotorCH.M2, ibitMotor.Forward, Math.min(Math.max(0 + tempD, minimumTurnSpeed), maximumTurnSpeed))
+            iBIT.setMotor(ibitMotorCH.M1, ibitMotor.Backward, tempV)
+            iBIT.setMotor(ibitMotorCH.M2, ibitMotor.Forward, tempV)
         } else {
-            iBIT.setMotor(ibitMotorCH.M1, ibitMotor.Forward, Math.min(Math.max(0 - tempD, minimumTurnSpeed), maximumTurnSpeed))
-            iBIT.setMotor(ibitMotorCH.M2, ibitMotor.Backward, Math.min(Math.max(0 - tempD, minimumTurnSpeed), maximumTurnSpeed))
+            iBIT.setMotor(ibitMotorCH.M1, ibitMotor.Forward, tempV)
+            iBIT.setMotor(ibitMotorCH.M2, ibitMotor.Backward, tempV)
         }
         Log()
     }
@@ -132,6 +133,7 @@ function leftIR () {
 let tempD = 0
 let currentHeading = 0
 let tempT = 0
+let tempV = 0
 let calibrated = 0
 let maximumTurnSpeed = 0
 let minimumTurnSpeed = 0
@@ -145,8 +147,8 @@ wbThreshold = 256
 baseSpeed = 30
 currentTarget = 1
 angleThreshold = 3
-minimumTurnSpeed = 2
-maximumTurnSpeed = 20
+minimumTurnSpeed = 5
+maximumTurnSpeed = 30
 calibrated = 0
 while (calibrated == 0) {
     basic.showIcon(IconNames.Diamond)
@@ -154,5 +156,5 @@ while (calibrated == 0) {
 }
 basic.showIcon(IconNames.Happy)
 basic.forever(function () {
-    test3()
+    test2()
 })
