@@ -42,12 +42,6 @@ function DoTurn (turnAngle: number) {
     }
     iBIT.MotorStop()
 }
-function mainLoop () {
-    Track(true, false)
-    Track(false, true)
-    Track(true, true)
-    Track(false, false)
-}
 function test3 () {
     HeadForward(baseSpeed, 2000)
     DoTurn(90)
@@ -87,22 +81,15 @@ function Calibrate () {
     while (leftIR() && rightIR()) {
         iBIT.Motor(ibitMotor.Forward, baseSpeed)
     }
-    basic.pause(500)
+    basic.pause(1000)
 }
 input.onButtonPressed(Button.AB, function () {
     input.calibrateCompass()
 })
-function Track (rightTurn: boolean, intersect: boolean) {
+function Track (rightTurn: boolean) {
     while (!(leftIR() && rightIR())) {
         HeadForward(baseSpeed, 0)
         Grab()
-    }
-    if (intersect) {
-        HeadForward(baseSpeed, 200)
-        while (!(leftIR() && rightIR())) {
-            HeadForward(baseSpeed, 0)
-            Grab()
-        }
     }
     Release()
     if (rightTurn) {
@@ -116,7 +103,6 @@ function Track (rightTurn: boolean, intersect: boolean) {
     } else {
         DoTurn(-90)
     }
-    Calibrate()
     if (currentTarget == 1) {
         currentTarget = 2
     } else {
@@ -130,10 +116,11 @@ function Log () {
 	
 }
 function Release () {
-    HeadForward(baseSpeed, 1500)
+    HeadForward(baseSpeed, 1000)
     iBIT.MotorStop()
     iBIT.Servo(ibitServo.SV1, 45)
-    HeadForward(baseSpeed * -1, 1000)
+    HeadForward(baseSpeed * -1, 1500)
+    Calibrate()
 }
 // returns angle (-180,180) positive being cw error
 // negative being ccw error
