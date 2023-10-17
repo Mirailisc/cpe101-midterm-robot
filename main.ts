@@ -42,12 +42,15 @@ function DoTurn (turnAngle: number) {
     }
     iBIT.MotorStop()
 }
-function test3 () {
-    HeadForward(baseSpeed, 2000)
-    DoTurn(90)
+function MainLoop () {
+    Track(true, false)
+    Track(false, true)
+    Track(true, true)
+    Track(false, true)
+    Track(true, false)
 }
-function test1 () {
-    DoTurn(0)
+function Test2 () {
+    HeadForward(baseSpeed, 1)
 }
 input.onButtonPressed(Button.A, function () {
     Calibrate()
@@ -60,11 +63,12 @@ function Grab () {
         iBIT.Servo(ibitServo.SV1, 0)
     }
 }
-function test2 () {
-    HeadForward(baseSpeed, 1)
-}
 function rightIR () {
     return iBIT.ReadADC(ibitReadADC.ADC0) < wbThreshold
+}
+function Test3 () {
+    HeadForward(baseSpeed, 2000)
+    DoTurn(90)
 }
 function Calibrate () {
     while (!(leftIR() && rightIR())) {
@@ -81,16 +85,25 @@ function Calibrate () {
     while (leftIR() && rightIR()) {
         iBIT.Motor(ibitMotor.Forward, baseSpeed)
     }
-    basic.pause(1000)
+    basic.pause(500)
 }
 input.onButtonPressed(Button.AB, function () {
     input.calibrateCompass()
 })
-function Track (rightTurn: boolean) {
+function Track (rightTurn: boolean, intersect: boolean) {
     while (!(leftIR() && rightIR())) {
         HeadForward(baseSpeed, 0)
         Grab()
     }
+    if (intersect) {
+        HeadForward(baseSpeed, 200)
+        while (!(leftIR() && rightIR())) {
+            HeadForward(baseSpeed, 0)
+            Grab()
+        }
+    }
+    HeadForward(-20, 500)
+    Calibrate()
     Release()
     if (rightTurn) {
         DoTurn(90)
@@ -103,6 +116,7 @@ function Track (rightTurn: boolean) {
     } else {
         DoTurn(-90)
     }
+    Calibrate()
     if (currentTarget == 1) {
         currentTarget = 2
     } else {
@@ -113,14 +127,17 @@ input.onButtonPressed(Button.B, function () {
     DoTurn(90)
 })
 function Log () {
-	
+    tempDegrees = deltaAngle()
+    radio.sendValue("dAng", tempDegrees)
 }
 function Release () {
-    HeadForward(baseSpeed, 1000)
+    HeadForward(baseSpeed, 1500)
     iBIT.MotorStop()
     iBIT.Servo(ibitServo.SV1, 45)
-    HeadForward(baseSpeed * -1, 1500)
-    Calibrate()
+    HeadForward(baseSpeed * -1, 1000)
+}
+function Test1 () {
+    DoTurn(0)
 }
 // returns angle (-180,180) positive being cw error
 // negative being ccw error
@@ -130,6 +147,7 @@ function deltaAngle () {
 function leftIR () {
     return iBIT.ReadADC(ibitReadADC.ADC1) < wbThreshold
 }
+let tempDegrees = 0
 let tempD = 0
 let currentHeading = 0
 let tempT = 0
@@ -141,6 +159,7 @@ let angleThreshold = 0
 let currentTarget = 0
 let baseSpeed = 0
 let wbThreshold = 0
+radio.setGroup(69)
 huskylens.initI2c()
 huskylens.initMode(protocolAlgorithm.ALGORITHM_COLOR_RECOGNITION)
 wbThreshold = 256
@@ -156,5 +175,5 @@ while (calibrated == 0) {
 }
 basic.showIcon(IconNames.Happy)
 basic.forever(function () {
-    test2()
+    MainLoop()
 })
